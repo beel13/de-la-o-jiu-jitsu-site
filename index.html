@@ -162,7 +162,7 @@ header{position:sticky;top:0;z-index:60;background:rgba(11,11,9,.93);backdrop-fi
 /* QUOTE SPINE (torn animated boundary, the ONE animated wipe on the page) */
 .spine{position:relative;background:var(--hazard);color:var(--black);padding:92px 0 84px;margin-top:44px}
 .spine::before{content:"";position:absolute;left:0;right:0;top:-34px;height:36px;background:var(--hazard);clip-path:polygon(0 100%,0 62%,4% 88%,9% 40%,14% 74%,19% 30%,25% 84%,31% 48%,37% 92%,43% 36%,50% 78%,56% 26%,62% 88%,68% 44%,74% 96%,80% 34%,86% 72%,92% 22%,97% 80%,100% 55%,100% 100%);animation:tearShift 6s ease-in-out infinite alternate}
-@keyframes tearShift{to{clip-path:polygon(0 100%,0 40%,4% 70%,9% 26%,14% 88%,19% 48%,25% 66%,31% 30%,37% 78%,43% 52%,50% 94%,56% 40%,62% 70%,68% 28%,74% 82%,80% 50%,86% 90%,92% 38%,97% 64%,100% 42%,100% 100%)}
+@keyframes tearShift{to{clip-path:polygon(0 100%,0 40%,4% 70%,9% 26%,14% 88%,19% 48%,25% 66%,31% 30%,37% 78%,43% 52%,50% 94%,56% 40%,62% 70%,68% 28%,74% 82%,80% 50%,86% 90%,92% 38%,97% 64%,100% 42%,100% 100%)}}
 @media(prefers-reduced-motion:reduce){.spine::before{animation:none}}
 .spine blockquote{font-family:var(--display);font-size:clamp(1.9rem,5.4vw,3.6rem);line-height:1.05;text-transform:uppercase;max-width:20em}
 .spine .attr{margin-top:22px;font-size:.8rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#4C4102}
@@ -266,9 +266,248 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
   .stats-row .cap{font-size:.6rem;letter-spacing:.12em}
   .cta-row .btn{width:100%}
 }
+
+/* ============================================================
+   v1.2 EFFECTS (business-v1 effects library)
+   dither-intro / scramble-text / spotlight-card / gradient-cta /
+   timeline-beam / proof-stack / ascii-solid
+   ============================================================ */
+:root{--fx-accent:#F2C700;--fx-accent-rgb:242,199,0;--fx-bg:#0B0B09}
+
+/* --- dither-intro: transient branded overlay, self-removes --- */
+#fx-intro{position:fixed;inset:0;z-index:9999;background:var(--fx-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:1;transition:opacity .4s cubic-bezier(.4,0,.2,1)}
+#fx-intro.fx-fade{opacity:0;pointer-events:none}
+.fx-intro-dots{position:absolute;inset:0;background:
+ radial-gradient(2px 2px at 15% 20%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 40% 10%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 65% 30%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 85% 15%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 25% 50%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 55% 45%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 75% 55%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 10% 70%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 45% 75%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 80% 65%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 30% 85%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%),
+ radial-gradient(2px 2px at 60% 90%,rgba(var(--fx-accent-rgb),1) 100%,transparent 150%);
+ filter:blur(1.2em);opacity:.3;-webkit-mask-image:radial-gradient(ellipse at center,black 50%,transparent 90%);mask-image:radial-gradient(ellipse at center,black 50%,transparent 90%);pointer-events:none}
+.fx-intro-nebula{position:absolute;width:70%;height:70%;top:15%;left:15%;background:radial-gradient(ellipse at 40% 35%,rgba(var(--fx-accent-rgb),.12) 0%,transparent 55%),radial-gradient(ellipse at 65% 60%,rgba(var(--fx-accent-rgb),.09) 0%,transparent 50%),radial-gradient(ellipse at 30% 70%,rgba(var(--fx-accent-rgb),.07) 0%,transparent 45%);filter:blur(50px);pointer-events:none}
+.fx-intro-glow{position:absolute;width:min(500px,80vw);height:min(500px,80vw);border-radius:50%;background:radial-gradient(circle,rgba(var(--fx-accent-rgb),.18) 0%,rgba(var(--fx-accent-rgb),.06) 35%,transparent 65%);filter:blur(50px);pointer-events:none}
+.fx-intro-letter{position:relative;width:min(400px,60vw);height:min(400px,60vw);z-index:10}
+.fx-intro-dither{position:absolute;inset:0;-webkit-mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-size:100% 100%;mask-repeat:no-repeat;mix-blend-mode:screen;opacity:.9}
+.fx-intro-dither canvas{width:100%;height:100%;display:block}
+.fx-intro-edge{position:absolute;inset:-20px;-webkit-mask-size:calc(100% + 40px) calc(100% + 40px);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;mask-size:calc(100% + 40px) calc(100% + 40px);mask-position:center;mask-repeat:no-repeat;background:radial-gradient(circle,rgba(var(--fx-accent-rgb),.18) 0%,transparent 65%);filter:blur(16px);opacity:.6;pointer-events:none}
+.fx-intro-word{font-family:var(--display);font-size:17px;letter-spacing:.3em;color:#6B6B5E;text-transform:uppercase;z-index:10}
+.fx-intro-grain{position:absolute;inset:0;pointer-events:none;opacity:.06;z-index:20;background-size:128px 128px}
+
+/* --- scramble-text: hero kicker decodes in --- */
+.fx-scr-word{display:inline-block;white-space:nowrap}
+.fx-scr-char{display:inline-block;text-align:center}
+.fx-scr-char.fx-scr-on{color:var(--hazard-dim)}
+
+/* --- spotlight-card: fine pointers only; touch gets the plain cards --- */
+@media (hover:hover) and (pointer:fine){
+  .fx-spotlight{position:relative}
+  .fx-spotlight.fx-spotlight{background-image:radial-gradient(230px 230px at calc(var(--x,-999)*1px) calc(var(--y,-999)*1px),rgba(242,199,0,.09),transparent 70%);background-repeat:no-repeat}
+  .fx-spotlight::after{content:"";position:absolute;inset:-1px;padding:1px;pointer-events:none;background:radial-gradient(190px 190px at calc(var(--x,-999)*1px) calc(var(--y,-999)*1px),rgba(255,222,31,.85),transparent 70%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude}
+}
+
+/* --- gradient-cta: hazard-on-black morphing gradient buttons --- */
+@property --gx{syntax:'<percentage>';initial-value:24%;inherits:false}
+@property --gy{syntax:'<percentage>';initial-value:130%;inherits:false}
+@property --gsx{syntax:'<percentage>';initial-value:170%;inherits:false}
+@property --gsy{syntax:'<percentage>';initial-value:200%;inherits:false}
+@property --gc1{syntax:'<color>';initial-value:#FFE452;inherits:false}
+@property --gc2{syntax:'<color>';initial-value:#FFD91F;inherits:false}
+@property --gc3{syntax:'<color>';initial-value:#F2C700;inherits:false}
+@property --gc4{syntax:'<color>';initial-value:#D9B200;inherits:false}
+@property --gc5{syntax:'<color>';initial-value:#9C8000;inherits:false}
+@property --gba{syntax:'<angle>';initial-value:20deg;inherits:true}
+@property --gb1{syntax:'<color>';initial-value:rgba(255,228,82,.25);inherits:true}
+@property --gb2{syntax:'<color>';initial-value:rgba(156,128,0,.8);inherits:true}
+.btn.fx-cta{
+  --gx:24%;--gy:130%;--gsx:170%;--gsy:200%;
+  --gc1:#FFE452;--gc2:#FFD91F;--gc3:#F2C700;--gc4:#D9B200;--gc5:#9C8000;
+  --gba:20deg;--gb1:rgba(255,228,82,.25);--gb2:rgba(156,128,0,.8);
+  position:relative;
+  background:radial-gradient(var(--gsx) var(--gsy) at var(--gx) var(--gy),var(--gc1) 32%,var(--gc2) 56%,var(--gc3) 74%,var(--gc4) 90%,var(--gc5) 100%);
+  transition:--gx .5s,--gy .5s,--gsx .5s,--gsy .5s,--gc1 .5s,--gc2 .5s,--gc3 .5s,--gc4 .5s,--gc5 .5s,--gba .5s,--gb1 .5s,--gb2 .5s,transform .25s;
+}
+.btn.fx-cta:hover,.btn.fx-cta:active{
+  --gx:78%;--gy:-40%;--gsx:135%;--gsy:120%;
+  --gc1:#FFF3A6;--gc2:#FFE452;--gc3:#FFDE1F;--gc4:#F2C700;--gc5:#C9A400;
+  --gba:200deg;--gb1:rgba(255,243,166,.35);--gb2:rgba(255,222,31,.95);
+  background:radial-gradient(var(--gsx) var(--gsy) at var(--gx) var(--gy),var(--gc1) 32%,var(--gc2) 56%,var(--gc3) 74%,var(--gc4) 90%,var(--gc5) 100%);
+}
+.btn-inv.fx-cta-dark{
+  --gx:20%;--gy:135%;--gsx:170%;--gsy:200%;
+  --gc1:#0B0B09;--gc2:#161206;--gc3:#241D06;--gc4:#3A3003;--gc5:#574802;
+  --gba:20deg;--gb1:rgba(11,11,9,.5);--gb2:rgba(76,65,2,.9);
+  position:relative;
+  background:radial-gradient(var(--gsx) var(--gsy) at var(--gx) var(--gy),var(--gc1) 32%,var(--gc2) 56%,var(--gc3) 74%,var(--gc4) 90%,var(--gc5) 100%);
+  transition:--gx .5s,--gy .5s,--gsx .5s,--gsy .5s,--gc1 .5s,--gc2 .5s,--gc3 .5s,--gc4 .5s,--gc5 .5s,--gba .5s,--gb1 .5s,--gb2 .5s,transform .25s;
+}
+.btn-inv.fx-cta-dark:hover,.btn-inv.fx-cta-dark:active{
+  --gx:80%;--gy:-35%;--gsx:140%;--gsy:125%;
+  --gc1:#33290A;--gc2:#241D06;--gc3:#1A1504;--gc4:#0F0D04;--gc5:#0B0B09;
+  --gba:200deg;--gb1:rgba(184,154,10,.5);--gb2:rgba(242,199,0,.9);
+  background:radial-gradient(var(--gsx) var(--gsy) at var(--gx) var(--gy),var(--gc1) 32%,var(--gc2) 56%,var(--gc3) 74%,var(--gc4) 90%,var(--gc5) 100%);
+}
+.btn.fx-cta::before,.btn-inv.fx-cta-dark::before{content:"";position:absolute;inset:0;padding:1px;background:linear-gradient(var(--gba),var(--gb1),var(--gb2));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.btn.fx-cta,.btn-inv.fx-cta-dark{transition:none}}
+
+/* --- timeline-beam: pulse connecting the first-visit steps --- */
+.step-grid{position:relative}
+.visit .step{z-index:1}
+.fx-beam-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+.fx-beam-base{fill:none;stroke:rgba(242,199,0,.22);stroke-width:2}
+.fx-beam-pulse{fill:none;stroke:url(#fx-beam-grad);stroke-width:2.5;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--hazard));visibility:hidden}
+
+/* --- proof-stack: real reviewer monograms on the booking band --- */
+.fx-proof{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:24px}
+.fx-proof-circles{display:flex}
+.fx-proof-circle{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;margin-left:-10px;font-family:var(--display);font-size:1.05rem;color:var(--hazard);background:#0B0B09;border:2px solid var(--hazard)}
+.fx-proof-circle:first-child{margin-left:0}
+.fx-proof-circle:nth-child(2n){background:#1E1E16}
+.fx-proof-circle:nth-child(3n){background:#262008}
+.fx-proof-caption{margin:0;font-size:.95rem;font-weight:600;color:#4C4102}
+.fx-proof-stars{color:#0B0B09;letter-spacing:2px;margin-right:8px}
+
+/* --- ascii-solid: rotating torus divider above the footer --- */
+.fx-ascii-wrap{display:flex;justify-content:center;padding:0 22px 56px}
+.fx-ascii{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--hazard);font-size:clamp(6px,2.2vw,11px);line-height:1.05;letter-spacing:0;white-space:pre;text-align:center;margin:0;user-select:none;-webkit-user-select:none;opacity:.65}
 </style>
 </head>
 <body>
+
+<!-- v1.2: dither-intro overlay (transient; self-removes; session + reduced-motion skip) -->
+<div id="fx-intro" aria-hidden="true">
+  <div class="fx-intro-dots"></div>
+  <div class="fx-intro-nebula"></div>
+  <div class="fx-intro-glow"></div>
+  <div class="fx-intro-letter">
+    <div class="fx-intro-dither"><canvas></canvas></div>
+    <div class="fx-intro-edge"></div>
+  </div>
+  <div class="fx-intro-word">De La O Jiu Jitsu</div>
+  <div class="fx-intro-grain"></div>
+</div>
+<script>
+/* v1.2 effects, block 1 of 2: dither intro. Must run synchronously right
+   after the overlay markup so skip paths remove it before first paint. */
+(function () {
+  "use strict";
+  var CONFIG = {
+    letter: "D",
+    hold: 1100,
+    fade: 400,
+    size: 200,
+    speed: 0.35,
+    letterFont: "Impact, Arial Black, sans-serif"
+  };
+
+  var overlay = document.getElementById("fx-intro");
+  if (!overlay) return;
+
+  function removeOverlay() {
+    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    overlay = null;
+  }
+
+  var reduced = false;
+  try {
+    reduced = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch (e) {}
+
+  var seen = false;
+  try { seen = sessionStorage.getItem("fx-intro-seen") === "1"; } catch (e) {}
+
+  if (reduced || seen) { removeOverlay(); return; }
+  try { sessionStorage.setItem("fx-intro-seen", "1"); } catch (e) {}
+
+  var rgb = [242, 199, 0];
+  try {
+    var raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--fx-accent-rgb").split(",");
+    if (raw.length === 3) {
+      rgb = [parseInt(raw[0], 10), parseInt(raw[1], 10), parseInt(raw[2], 10)];
+    }
+  } catch (e) {}
+
+  var letterSvg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'>" +
+    "<text x='50%' y='54%' dominant-baseline='central' text-anchor='middle' " +
+    "font-family='" + CONFIG.letterFont + "' font-weight='700' font-size='650' " +
+    "fill='white' letter-spacing='-0.02em'>" + CONFIG.letter + "</text></svg>";
+  var maskUrl = 'url("data:image/svg+xml,' + encodeURIComponent(letterSvg) + '")';
+  var ditherEl = overlay.querySelector(".fx-intro-dither");
+  var edgeEl = overlay.querySelector(".fx-intro-edge");
+  ditherEl.style.webkitMaskImage = maskUrl;
+  ditherEl.style.maskImage = maskUrl;
+  edgeEl.style.webkitMaskImage = maskUrl;
+  edgeEl.style.maskImage = maskUrl;
+
+  var grainSvg = "<svg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'>" +
+    "<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' " +
+    "numOctaves='4' stitchTiles='stitch'/></filter>" +
+    "<rect width='100%' height='100%' filter='url(#n)' opacity='0.5'/></svg>";
+  overlay.querySelector(".fx-intro-grain").style.backgroundImage =
+    'url("data:image/svg+xml,' + encodeURIComponent(grainSvg) + '")';
+
+  var BAYER = [
+    [0 / 16, 8 / 16, 2 / 16, 10 / 16],
+    [12 / 16, 4 / 16, 14 / 16, 6 / 16],
+    [3 / 16, 11 / 16, 1 / 16, 9 / 16],
+    [15 / 16, 7 / 16, 13 / 16, 5 / 16]
+  ];
+
+  var canvas = overlay.querySelector("canvas");
+  var W = CONFIG.size, H = CONFIG.size;
+  canvas.width = W;
+  canvas.height = H;
+  var ctx = canvas.getContext("2d");
+  var rafId = 0;
+  var t = 0;
+
+  function frame() {
+    t += CONFIG.speed * 0.016;
+    var img = ctx.createImageData(W, H);
+    var data = img.data;
+    for (var y = 0; y < H; y++) {
+      for (var x = 0; x < W; x++) {
+        var nx = x / W, ny = y / H;
+        var cx = nx - 0.5, cy = ny - 0.5;
+        var dist = Math.sqrt(cx * cx + cy * cy);
+        var ang = Math.atan2(cy, cx);
+        var w1 = Math.sin(dist * 8 - t * 2 + ang * 2) * 0.5 + 0.5;
+        var w2 = Math.sin(dist * 12 + t * 1.5 - ang * 3) * 0.5 + 0.5;
+        var w3 = Math.sin(nx * 6 + t + Math.cos(ny * 5 - t * 0.7)) * 0.5 + 0.5;
+        var v = w1 * 0.4 + w2 * 0.35 + w3 * 0.25;
+        var radialFade = 1 - Math.min(1, dist * 1.6);
+        v *= radialFade * 0.9 + 0.1;
+        var on = v > BAYER[y % 4][x % 4] ? 1 : 0;
+        var idx = (y * W + x) * 4;
+        data[idx] = on * rgb[0];
+        data[idx + 1] = on * rgb[1];
+        data[idx + 2] = on * rgb[2];
+        data[idx + 3] = on * 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    rafId = requestAnimationFrame(frame);
+  }
+  rafId = requestAnimationFrame(frame);
+
+  setTimeout(function () {
+    if (!overlay) return;
+    overlay.className += " fx-fade";
+    setTimeout(function () {
+      cancelAnimationFrame(rafId);
+      removeOverlay();
+    }, CONFIG.fade + 50);
+  }, CONFIG.hold);
+})();
+</script>
 
 <div class="hazard-tape" aria-hidden="true"></div>
 <header>
@@ -290,7 +529,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
 <section class="hero">
   <svg class="bio-ghost" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="55" r="10" fill="none" stroke="#F2C700" stroke-width="6"/><path d="M50 40 a20 20 0 0 1 17 10 l11 -6 a33 33 0 0 0 -56 0 l11 6 a20 20 0 0 1 17 -10 Z" fill="#F2C700"/><path d="M36 66 l-11 8 a33 33 0 0 0 50 0 l-11 -8 a20 20 0 0 1 -28 0 Z" fill="#F2C700"/></svg>
   <div class="hero-inner wrap">
-    <p class="label rv">Stanton, California / BJJ, kids, Muay Thai, boxing</p>
+    <p class="label rv" data-fx-scramble data-fx-charset="01">Stanton, California / BJJ, kids, Muay Thai, boxing</p>
     <h1 class="mega" aria-label="Join the fight">
       <span class="rv">Join</span>
       <span class="rv outline" style="transition-delay:.08s">The</span>
@@ -298,7 +537,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
     </h1>
     <p class="sub rv" style="transition-delay:.24s"><strong>De La O Jiu Jitsu Training Center</strong> is where Stanton actually trains: Brazilian Jiu Jitsu, kids self defense, Muay Thai, and boxing under one roof, run by a <strong>4th degree black belt who fought in King of the Cage</strong>.</p>
     <div class="cta-row rv" style="transition-delay:.32s">
-      <a class="btn" href="#book">Text Us to Start</a>
+      <a class="btn fx-cta" href="#book">Text Us to Start</a>
       <a class="btn hollow" href="#schedule">See the Schedule</a>
     </div>
     <p class="micro rv" style="transition-delay:.4s"><strong>All levels.</strong> First day students train next to pros and it works. Come try it first, then talk numbers with John.<!-- PLACEHOLDER: an old 2010 review mentions first lesson free; confirm with owner before promising a price or free class --></p>
@@ -332,19 +571,19 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
     <p class="label rv"><span class="n">01 /</span> Pick your fight</p>
     <h2 class="rv">What are you here for?</h2>
     <div class="path-grid">
-      <a class="path-card rv" style="transition-delay:.05s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20want%20to%20start%20adult%20BJJ.%20Which%20classes%20can%20I%20jump%20into%20this%20week%3F">
+      <a class="path-card fx-spotlight rv" style="transition-delay:.05s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20want%20to%20start%20adult%20BJJ.%20Which%20classes%20can%20I%20jump%20into%20this%20week%3F">
         <h3>BJJ</h3>
         <div class="t">Adults / gi and no-gi</div>
         <p>Morning and evening classes six days a week, taught by John De La O himself. Grappling and real self defense.</p>
         <span class="go">Text about BJJ</span>
       </a>
-      <a class="path-card rv" style="transition-delay:.12s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20am%20looking%20at%20the%20kids%20self%20defense%20program%20for%20my%20child.%20What%20are%20the%20times%20this%20week%3F">
+      <a class="path-card fx-spotlight rv" style="transition-delay:.12s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20am%20looking%20at%20the%20kids%20self%20defense%20program%20for%20my%20child.%20What%20are%20the%20times%20this%20week%3F">
         <h3>Kids Self Defense</h3>
         <div class="t">Boys and girls / Tue + Thu evenings</div>
         <p>A kids program parents in reviews call awesome. Confidence, discipline, and real self defense in a family atmosphere.</p>
         <span class="go">Text about kids</span>
       </a>
-      <a class="path-card rv" style="transition-delay:.19s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20want%20to%20train%20striking%2C%20Muay%20Thai%20or%20boxing.%20What%20are%20the%20times%20this%20week%3F">
+      <a class="path-card fx-spotlight rv" style="transition-delay:.19s" href="sms:+17145271845?&amp;body=Hi%20De%20La%20O%20Jiu%20Jitsu%2C%20I%20want%20to%20train%20striking%2C%20Muay%20Thai%20or%20boxing.%20What%20are%20the%20times%20this%20week%3F">
         <h3>Striking</h3>
         <div class="t">Bravado Muay Thai / D.W.B Boxing</div>
         <p>Both run out of the same building. Pads, bags, clinch, hands, footwork, and conditioning that leaves nothing in the tank.</p>
@@ -360,7 +599,18 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
   <div class="wrap">
     <p class="label rv"><span class="n">02 /</span> Your first visit</p>
     <h2 class="rv">Here is exactly how it goes.</h2>
-    <div class="step-grid">
+    <div class="step-grid" id="fxTimeline">
+      <!-- v1.2: timeline-beam layer (decorative) -->
+      <svg class="fx-beam-svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="fx-beam-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="800">
+            <stop offset="0" stop-color="#F2C700" stop-opacity="0.35"/>
+            <stop offset="1" stop-color="#F2C700" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <path class="fx-beam-base"/>
+        <path class="fx-beam-pulse"/>
+      </svg>
       <div class="step rv" style="transition-delay:.05s">
         <div class="no">1</div>
         <h3>Text us</h3>
@@ -440,7 +690,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
     <p class="label rv"><span class="n">05 /</span> The week</p>
     <h2 class="rv">Schedule on the wall.</h2>
     <div class="sch-grid">
-      <div class="sch-card rv" style="transition-delay:.05s">
+      <div class="sch-card fx-spotlight rv" style="transition-delay:.05s">
         <h3>De La O Jiu Jitsu <small>Adults / BJJ</small></h3>
         <ul>
           <li><b>Mon</b><span>11-12:30, 6-7, 7-8:30</span></li>
@@ -451,14 +701,14 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
           <li><b>Sat</b><span>9-11 am</span></li>
         </ul>
       </div>
-      <div class="sch-card rv" style="transition-delay:.1s">
+      <div class="sch-card fx-spotlight rv" style="transition-delay:.1s">
         <h3>Children's Self Defense <small>Kids / boys and girls</small></h3>
         <ul>
           <li><b>Tue</b><span>5-6 pm, 6-7 pm</span></li>
           <li><b>Thu</b><span>5-6 pm, 6-7 pm</span></li>
         </ul>
       </div>
-      <div class="sch-card rv" style="transition-delay:.15s">
+      <div class="sch-card fx-spotlight rv" style="transition-delay:.15s">
         <h3>Bravado Muay Thai <small>Striking</small></h3>
         <ul>
           <li><b>Mon</b><span>5-7 pm</span></li>
@@ -466,7 +716,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
           <li><b>Wed</b><span>5-7 pm</span></li>
         </ul>
       </div>
-      <div class="sch-card rv" style="transition-delay:.2s">
+      <div class="sch-card fx-spotlight rv" style="transition-delay:.2s">
         <h3>D.W.B Boxing <small>Striking</small></h3>
         <ul>
           <li><b>Mon</b><span>2-6 pm</span></li>
@@ -477,7 +727,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
           <li><b>Sat</b><span>12-4 pm</span></li>
         </ul>
       </div>
-      <div class="sch-card openmat rv" style="transition-delay:.25s">
+      <div class="sch-card openmat fx-spotlight rv" style="transition-delay:.25s">
         <h3>Just want a look first?</h3>
         <div class="big">Friday Open Mat, 5 pm</div>
         <p>Come watch, meet the room, no commitment. The easiest first step there is.</p>
@@ -558,6 +808,19 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
     <p class="label rv" style="color:#4C4102"><span class="n" style="color:#7A6903">08 /</span> First step</p>
     <h2 class="rv">Ready when you are.</h2>
     <p class="book-sub rv">Fill this out and it opens a text straight to the gym. One tap to send.</p>
+    <!-- v1.2: proof-stack. Initials = real reviewers already quoted on this page
+         (Gerardo, Howard, Thomas, Audra, Michael, Brian). Numbers = real Google profile. -->
+    <div class="fx-proof rv">
+      <div class="fx-proof-circles" aria-hidden="true">
+        <span class="fx-proof-circle">G</span>
+        <span class="fx-proof-circle">H</span>
+        <span class="fx-proof-circle">T</span>
+        <span class="fx-proof-circle">A</span>
+        <span class="fx-proof-circle">M</span>
+        <span class="fx-proof-circle">B</span>
+      </div>
+      <p class="fx-proof-caption"><span class="fx-proof-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>4.7 stars across 32 Google reviews</p>
+    </div>
     <div class="book-grid">
       <form id="introForm" class="rv" novalidate>
         <div class="f-row">
@@ -582,7 +845,7 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
           </select>
           <div class="f-err" id="err-prog">Please pick a program.</div>
         </div>
-        <button type="submit" class="btn btn-inv">Text the Gym</button>
+        <button type="submit" class="btn btn-inv fx-cta-dark">Text the Gym</button>
         <p class="micro">All levels. First day students train next to pros and it works.</p>
       </form>
       <div>
@@ -626,6 +889,9 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
     </div>
   </div>
 </section>
+
+<!-- v1.2: ascii-solid torus divider (decorative, IO-gated) -->
+<div class="fx-ascii-wrap" aria-hidden="true"><pre id="fx-ascii" class="fx-ascii"></pre></div>
 
 </main>
 
@@ -730,6 +996,297 @@ footer{background:var(--coal);color:var(--mute);padding:44px 0;border-top:2px so
       a.href = "https://maps.apple.com/?daddr=8381+Katella+Ave,+Stanton,+CA+90680";
     });
   }
+
+  /* ==================================================================
+     v1.2 effects (business-v1 effects library)
+     scramble-text / spotlight-card / timeline-beam / ascii-solid
+     ================================================================== */
+  var fxReduced = false;
+  try {
+    fxReduced = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  } catch (e) {}
+
+  /* --- scramble-text: hero kicker decodes in. Delayed while the intro
+         overlay plays so the settle is actually visible. --- */
+  (function () {
+    var els = document.querySelectorAll("[data-fx-scramble]");
+    if (!els.length) return;
+    var FLIP_MS = 45, SETTLE_MS = 22;
+
+    function randChar(set) {
+      return set.charAt(Math.floor(Math.random() * set.length));
+    }
+
+    function start(el, finalText, charset) {
+      var wrap = document.createElement("span");
+      wrap.setAttribute("aria-hidden", "true");
+      var spans = [];
+      var words = finalText.split(" ");
+      var w, c;
+      for (w = 0; w < words.length; w++) {
+        if (w > 0) wrap.appendChild(document.createTextNode(" "));
+        var word = document.createElement("span");
+        word.className = "fx-scr-word";
+        for (c = 0; c < words[w].length; c++) {
+          var sp = document.createElement("span");
+          sp.className = "fx-scr-char";
+          sp.textContent = words[w].charAt(c);
+          word.appendChild(sp);
+          spans.push(sp);
+        }
+        wrap.appendChild(word);
+      }
+      el.textContent = "";
+      el.appendChild(wrap);
+
+      var i;
+      for (i = 0; i < spans.length; i++) {
+        spans[i].style.width =
+          spans[i].getBoundingClientRect().width.toFixed(2) + "px";
+      }
+      for (i = 0; i < spans.length; i++) {
+        spans[i].textContent = randChar(charset);
+        spans[i].className += " fx-scr-on";
+      }
+
+      var settled = 0;
+      var finals = words.join("");
+
+      var flip = setInterval(function () {
+        for (var k = settled; k < spans.length; k++) {
+          spans[k].textContent = randChar(charset);
+        }
+      }, FLIP_MS);
+
+      var settle = setInterval(function () {
+        if (settled >= spans.length) {
+          clearInterval(flip);
+          clearInterval(settle);
+          return;
+        }
+        spans[settled].textContent = finals.charAt(settled);
+        spans[settled].className = "fx-scr-char";
+        settled++;
+      }, SETTLE_MS);
+    }
+
+    function initEl(el) {
+      var finalText = el.textContent.replace(/\s+/g, " ");
+      el.setAttribute("aria-label", finalText);
+      if (fxReduced || !("IntersectionObserver" in window)) return;
+      var charset = el.getAttribute("data-fx-charset") || "01";
+      var started = false;
+      var sio = new IntersectionObserver(function (entries) {
+        if (!entries[0].isIntersecting || started) return;
+        started = true;
+        sio.disconnect();
+        start(el, finalText, charset);
+      }, { threshold: 0.3 });
+      sio.observe(el);
+    }
+
+    function initAll() {
+      for (var e = 0; e < els.length; e++) initEl(els[e]);
+    }
+    /* If the dither intro overlay is still up, wait for it to fade */
+    if (document.getElementById("fx-intro")) setTimeout(initAll, 1250);
+    else initAll();
+  })();
+
+  /* --- spotlight-card: per-card pointer spotlight, fine pointers only.
+         Coordinates are card-local (not background-attachment:fixed) so
+         the existing hover translateY transform stays correct. --- */
+  (function () {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    document.querySelectorAll(".fx-spotlight").forEach(function (card) {
+      var raf = 0;
+      card.addEventListener("pointermove", function (e) {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function () {
+          var r = card.getBoundingClientRect();
+          card.style.setProperty("--x", (e.clientX - r.left).toFixed(1));
+          card.style.setProperty("--y", (e.clientY - r.top).toFixed(1));
+        });
+      }, { passive: true });
+      card.addEventListener("pointerleave", function () {
+        cancelAnimationFrame(raf);
+        card.style.setProperty("--x", "-999");
+        card.style.setProperty("--y", "-999");
+      });
+    });
+  })();
+
+  /* --- timeline-beam: gradient pulse connecting the 3 first-visit steps.
+         IO-gated; reduced motion gets the static base line only. --- */
+  (function () {
+    var container = document.getElementById("fxTimeline");
+    if (!container) return;
+    var svg = container.querySelector(".fx-beam-svg");
+    var base = container.querySelector(".fx-beam-base");
+    var pulse = container.querySelector(".fx-beam-pulse");
+    var grad = container.querySelector("#fx-beam-grad");
+    if (!svg || !base || !pulse) return;
+
+    var PULSE_LEN = 110, SPEED = 300, REST_MS = 900;
+    var total = 0;
+
+    function build() {
+      var crect = container.getBoundingClientRect();
+      if (!crect.width) return;
+      svg.setAttribute("viewBox",
+        "0 0 " + Math.round(crect.width) + " " + Math.round(crect.height));
+      if (grad) {
+        grad.setAttribute("x2", Math.round(crect.width));
+        grad.setAttribute("y2", Math.round(crect.height));
+      }
+      var nodes = container.querySelectorAll(".step .no");
+      if (nodes.length < 2) return;
+      var d = "";
+      for (var i = 0; i < nodes.length; i++) {
+        var r = nodes[i].getBoundingClientRect();
+        var x = (r.left - crect.left + r.width / 2).toFixed(1);
+        var y = (r.top - crect.top + r.height / 2).toFixed(1);
+        d += (i === 0 ? "M" : " L") + x + " " + y;
+      }
+      base.setAttribute("d", d);
+      pulse.setAttribute("d", d);
+      try { total = pulse.getTotalLength(); } catch (err) { total = 0; }
+      if (!total) return;
+      pulse.style.strokeDasharray = PULSE_LEN + " " + (total + PULSE_LEN);
+      pulse.style.strokeDashoffset = PULSE_LEN;
+    }
+
+    var rafId = 0, running = false, inView = false;
+    var s = 0, lastTs = 0, restUntil = 0;
+
+    function stepFrame(ts) {
+      if (!running) return;
+      if (!lastTs) lastTs = ts;
+      var dt = Math.min(64, ts - lastTs);
+      lastTs = ts;
+      if (ts >= restUntil) {
+        s += SPEED * dt / 1000;
+        if (s > total + PULSE_LEN * 2) { s = 0; restUntil = ts + REST_MS; }
+        pulse.style.strokeDashoffset = PULSE_LEN - s;
+      }
+      rafId = requestAnimationFrame(stepFrame);
+    }
+
+    function update() {
+      var should = inView && !document.hidden && !fxReduced && total > 0;
+      if (should && !running) {
+        running = true;
+        lastTs = 0;
+        pulse.style.visibility = "visible";
+        rafId = requestAnimationFrame(stepFrame);
+      }
+      if (!should && running) {
+        running = false;
+        cancelAnimationFrame(rafId);
+      }
+    }
+
+    build();
+    requestAnimationFrame(build);
+    window.addEventListener("load", build);
+    /* the .rv reveal shifts steps 28px while hidden; re-measure once
+       each step's reveal transform finishes */
+    container.addEventListener("transitionend", function (ev) {
+      if (ev.propertyName === "transform") build();
+    });
+    var resizeTimer = 0;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { build(); s = 0; }, 150);
+    });
+
+    if (fxReduced) return;
+    if ("IntersectionObserver" in window) {
+      var bio = new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.15 });
+      bio.observe(container);
+    } else {
+      inView = true;
+      update();
+    }
+    document.addEventListener("visibilitychange", update);
+  })();
+
+  /* --- ascii-solid: rotating torus divider above the footer.
+         IO-gated; reduced motion gets one static frame. --- */
+  (function () {
+    var el = document.getElementById("fx-ascii");
+    if (!el) return;
+
+    var W = 40, H = 20;
+    var CHARS = ".,-~:;=!*#$@";
+    var FPS = 24;
+    var SPIN_A = 0.05, SPIN_B = 0.025;
+    var K1X = 15, K1Y = 7.5;
+    var A = 1.0, B = 0.4;
+
+    function renderFrame() {
+      var n = W * H;
+      var b = new Array(n);
+      var z = new Array(n);
+      for (var k = 0; k < n; k++) { b[k] = " "; z[k] = 0; }
+      var cA = Math.cos(A), sA = Math.sin(A);
+      var cB = Math.cos(B), sB = Math.sin(B);
+      for (var j = 0; j < 6.28; j += 0.07) {
+        var ct = Math.cos(j), st = Math.sin(j);
+        for (var i = 0; i < 6.28; i += 0.03) {
+          var sp = Math.sin(i), cp = Math.cos(i);
+          var h = ct + 2;
+          var D = 1 / (sp * h * sA + st * cA + 5);
+          var t = sp * h * cA - st * sA;
+          var x = Math.floor(W / 2 + K1X * D * (cp * h * cB - t * sB));
+          var y = Math.floor(H / 2 + K1Y * D * (cp * h * sB + t * cB));
+          var o = x + W * y;
+          var N = Math.floor(8 * ((st * sA - sp * ct * cA) * cB -
+                                   sp * ct * sA - st * cA - cp * ct * sB));
+          if (y >= 0 && y < H && x >= 0 && x < W && D > z[o]) {
+            z[o] = D;
+            b[o] = CHARS.charAt(N > 0 ? (N < CHARS.length ? N : CHARS.length - 1) : 0);
+          }
+        }
+      }
+      var lines = [];
+      for (var r = 0; r < H; r++) lines.push(b.slice(r * W, (r + 1) * W).join(""));
+      el.textContent = lines.join("\n");
+    }
+
+    renderFrame();
+    if (fxReduced) return;
+
+    var timer = 0;
+    var onScreen = false;
+
+    function tick() {
+      A += SPIN_A;
+      B += SPIN_B;
+      renderFrame();
+    }
+    function update() {
+      var shouldRun = onScreen && !document.hidden;
+      if (shouldRun && !timer) timer = setInterval(tick, Math.round(1000 / FPS));
+      if (!shouldRun && timer) { clearInterval(timer); timer = 0; }
+    }
+
+    if ("IntersectionObserver" in window) {
+      var aio = new IntersectionObserver(function (entries) {
+        onScreen = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.05 });
+      aio.observe(el);
+    } else {
+      onScreen = true;
+      update();
+    }
+    document.addEventListener("visibilitychange", update);
+  })();
 })();
 </script>
 </body>
